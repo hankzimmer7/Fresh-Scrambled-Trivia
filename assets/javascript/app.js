@@ -1,9 +1,17 @@
-// Define the variables used in the game
+//TODO:
+//Create questions
+
+// Reset button without reloading the page
+
+//Link assingment to portfolio
+
+//Define the variables used in the game
 var currentQuestion = 0;
 var correctAnswers = 0;
 var incorrectAnswers = 0;
+var unansweredQuestions = 0;
 
-//  Variable that will hold our setInterval that runs the time
+// Variable that will hold our setInterval that runs the time
 var intervalId;
 
 //Define an array of questions
@@ -24,23 +32,44 @@ var questions = [{
     }
 ]
 
+//Function to determine what to do next, whether the timer has run out or whether the user has clicked an answer
+function determineNextAction(answerCorrectness) {
 
-//Defines a function to display a question and its possible answers to the user
-displayQuestion = function (questionNumber) {
+    //Display whether the answer was correct on incorrect
+    displayCorrectAnswer(currentQuestion, answerCorrectness);
+
+    // If this is the last question, display the results
+    if (currentQuestion === questions.length - 1) {
+        setTimeout(function () {
+            displayResults()
+        }, 3000);
+    }
+
+    // If this isn't the last question, move on to the next question
+    else {
+
+        //Increment to the next question
+        currentQuestion++;
+
+        //Display the next question after 3 seconds
+        setTimeout(function () {
+            displayQuestion(currentQuestion)
+        }, 3000);
+    }
+}
+
+//Function to display a question and its possible answers to the user
+function displayQuestion(questionNumber) {
 
     //Clear the currently displayed information
     $('#question-area').empty();
-
-    //Stop and reset the timer
-    timer.stop();
-    timer.reset();
 
     //Start the timer and display the time remaining
     timer.start();
     var timerDisplay = $('<p>');
     timerDisplay.attr("id", "timer-display");
     timerDisplay.attr("class", "text-center");
-    timerDisplay.text("Time Remaining: 30 Seconds");
+    timerDisplay.text("Time Remaining: " + timer.time + " Seconds");
     $('#question-area').append(timerDisplay);
 
     //Display the question
@@ -52,37 +81,85 @@ displayQuestion = function (questionNumber) {
     //Loop through the answers and create a button for each
     for (var i = 0; i < 4; i++) {
         var button = $('<button>');
-        button.attr("class", "btn btn-light btn-block" + " answer-choice" + i);
+        button.attr("class", "btn btn-light btn-block answer-choice-button" + " answer-choice" + i);
         button.text(questions[questionNumber].answerChoices[i]);
         $('#question-area').append(button);
     }
 }
 
-displayCorrecAnswer = function (questionNumber, correctAnswerChosen) {
+//Function to display whther the user was correct or incorrect
+function displayCorrectAnswer(questionNumber, answerCorrectness) {
 
     //Clear the currently displayed information
     $('#question-area').empty();
 
-    //Stop and reset the timer
-    timer.stop();
-    timer.reset();
-
     //Display whether the user was correct or incorrect
     var wasItCorrect = $('<p>');
-    wasItCorrect.attr("class", "text-center");
-    if (correctAnswerChosen) {
+    wasItCorrect.attr("class", "text-center display-4");
+    if (answerCorrectness === "correct") {
         wasItCorrect.text("Correct!");
-    } else {
+    } else if (answerCorrectness === "incorrect") {
         wasItCorrect.text("Incorrect!");
+    } else if (answerCorrectness === "unanswered") {
+        wasItCorrect.text("Time is Up!")
     }
-
     $('#question-area').append(wasItCorrect);
+
+    //Display the question again
+    var questionStatement = $('<p>');
+    questionStatement.attr("class", "text-center");
+    questionStatement.text(questions[questionNumber].question);
+    $('#question-area').append(questionStatement);
+
+    // Display the correct answer
+    var correctAnswer = $('<p>');
+    correctAnswer.attr("class", "text-center");
+    correctAnswer.text(questions[questionNumber].correctAnswer);
+    $('#question-area').append(correctAnswer);
+
 }
 
+//Function to display the final score after the user has answered all of the questions
+function displayResults() {
+
+    //Clear the currently displayed information
+    $('#question-area').empty();
+
+    //Display final results
+    var resultsParagraph = $('<p>');
+    resultsParagraph.attr("class", "text-center display-4");
+    resultsParagraph.text("Final Results");
+    $('#question-area').append(resultsParagraph);
+
+    //Display the number of questions answered correctly
+    var correctAnswersParagraph = $('<p>');
+    correctAnswersParagraph.attr("class", "text-center");
+    correctAnswersParagraph.text("Correct Answers: " + correctAnswers);
+    $('#question-area').append(correctAnswersParagraph);
+
+    // Display the number of questions answered incorrectly
+    var incorrectAnswersParagraph = $('<p>');
+    incorrectAnswersParagraph.attr("class", "text-center");
+    incorrectAnswersParagraph.text("Incorrect Answers: " + incorrectAnswers);
+    $('#question-area').append(incorrectAnswersParagraph);
+
+    // Display the number of questions not answered
+    var unansweredParagraph = $('<p>');
+    unansweredParagraph.attr("class", "text-center");
+    unansweredParagraph.text("Questions not answered: " + unansweredQuestions);
+    $('#question-area').append(unansweredParagraph);
+
+    //Display the game reset button
+    var resetButton = $('<button>');
+    resetButton.attr("class", "btn btn-dark btn-block");
+    resetButton.attr('onclick', "location.href='index.html'")
+    resetButton.text("Reset Game")
+    $('#question-area').append(resetButton);
+}
 
 // Timer object
 var timer = {
-    time: 30,
+    time: 10,
 
     start: function () {
         //Use setInterval to start the countdown
@@ -96,10 +173,26 @@ var timer = {
         //Decrement time by 1
         timer.time--;
         //Display the time remaining
-        $("#timer-display").text("Time Remaining: " + timer.time + " Seconds");
+        if (timer.time === 1) {
+            $("#timer-display").text("Time Remaining: " + timer.time + " Second");
+        } else {
+            $("#timer-display").text("Time Remaining: " + timer.time + " Seconds");
+        }
+
+        //If the time runs out
+        if (timer.time === 0) {
+
+            //Stop the timer
+            timer.stop();
+            timer.reset();
+
+            //Count the question as unanswered
+            unansweredQuestions++;
+            determineNextAction("unanswered");
+        }
     },
     reset: function () {
-        timer.time = 30;
+        timer.time = 10;
     },
 };
 
@@ -110,7 +203,7 @@ $(document).ready(function () {
     displayQuestion(currentQuestion);
 
     //When the user clicks on an answer, take action
-    $(document).on('click', '.btn', function () {
+    $(document).on('click', '.answer-choice-button', function () {
 
         timer.stop();
         timer.reset();
@@ -118,33 +211,16 @@ $(document).ready(function () {
         // Determine which answer the user chose
         clickedButtonText = $(this)[0].innerText;
         correctAnwerText = questions[currentQuestion].correctAnswer;
-        // console.log(clickedButtonText);
-        // console.log("Correct Text: " + correctAnwerText);
 
-        //Take action depending on whether the user selected the correct or incorrect answer
+        //Determine whether the user selected the correct or incorrect answer
         if (clickedButtonText == correctAnwerText) {
-            correctAnswerChosen = true;
+            answerCorrectness = "correct";
             correctAnswers++;
         } else {
-            correctAnswerChosen = false;
+            answerCorrectness = "incorrect";
             incorrectAnswers++;
         }
-        
-        //Display whether the answer was correct on incorrect
-        displayCorrecAnswer(currentQuestion, correctAnswerChosen);
-                        
-                if (currentQuestion === questions.length - 1) {
-                    alert("End of Game!")
-                } else {
 
-            //Increment to the next question
-            currentQuestion++;
-            console.log("current question: " + currentQuestion);
-
-
-            //Display the next question after 3 seconds
-            setTimeout(function () {displayQuestion(currentQuestion)}, 3000);
-        }
-
+        determineNextAction(answerCorrectness);
     });
 });
