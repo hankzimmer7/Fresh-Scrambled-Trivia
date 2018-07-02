@@ -1,9 +1,7 @@
 //TODO:
 //Create questions
 
-// Reset button without reloading the page
-
-//Link assingment to portfolio
+//Link assignment to portfolio
 
 //Define the variables used in the game
 var currentQuestion = 0;
@@ -42,7 +40,7 @@ function determineNextAction(answerCorrectness) {
     if (currentQuestion === questions.length - 1) {
         setTimeout(function () {
             displayResults()
-        }, 3000);
+        }, 300);
     }
 
     // If this isn't the last question, move on to the next question
@@ -54,7 +52,7 @@ function determineNextAction(answerCorrectness) {
         //Display the next question after 3 seconds
         setTimeout(function () {
             displayQuestion(currentQuestion)
-        }, 3000);
+        }, 300);
     }
 }
 
@@ -151,15 +149,27 @@ function displayResults() {
 
     //Display the game reset button
     var resetButton = $('<button>');
-    resetButton.attr("class", "btn btn-dark btn-block");
+    resetButton.attr("class", "btn btn-dark btn-block reset-button");
     resetButton.attr('onclick', "location.href='index.html'")
-    resetButton.text("Reset Game")
+    resetButton.text("Restart Game")
     $('#question-area').append(resetButton);
+}
+
+//Function resets the game
+function resetGame() {
+    //Resets the initial game variables
+    currentQuestion = 0;
+    correctAnswers = 0;
+    incorrectAnswers = 0;
+    unansweredQuestions = 0;
+
+    //Display the first question
+    displayQuestion(currentQuestion);
 }
 
 // Timer object
 var timer = {
-    time: 10,
+    time: 3,
 
     start: function () {
         //Use setInterval to start the countdown
@@ -192,7 +202,7 @@ var timer = {
         }
     },
     reset: function () {
-        timer.time = 10;
+        timer.time = 3;
     },
 };
 
@@ -222,5 +232,10 @@ $(document).ready(function () {
         }
 
         determineNextAction(answerCorrectness);
+    });
+
+    //When the user clicks the reset button, restart the game
+    $(document).on('click', '.reset-button', function () {
+        resetGame();
     });
 });
