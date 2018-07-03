@@ -40,13 +40,13 @@ var questions = [{
         question: "An average chicken produces eggs for what period of their life?",
         answerChoices: ["6 months", "12 months", "24 months", "36 months"],
         correctAnswer: "24 months",
-        additionalInfo: "An average chicken is able to lay eggs over a 2 year period and lays an average of 270-320 eggs per year."
+        additionalInfo: "An average chicken is able to lay eggs over a 2-year period and lays an average of 270-320 eggs per year."
     },
     {
         question: "Which country produces the most eggs each year?",
         answerChoices: ["The United States", "China", "Mexico", "Australia"],
         correctAnswer: "China",
-        additionalInfo: "China produces about 160 billion eggs per year, making it the largest egg producer in the world"
+        additionalInfo: "China produces about 160 billion eggs per year, making it the largest egg producer in the world."
     },
     {
         question: "The oldest recipes containing eggs are for what type of dish?",
