@@ -16,10 +16,10 @@ var questions = [{
         question: "Eggshells can be used in treating osteoporosis due to containing what chemical compound?",
         answerChoices: ["Vitamin D", "Calcium Carbonate", "Calcium Bicarbonate", "Sodium Flouride"],
         correctAnswer: "Calcium Carbonate",
-        additionalInfo: "Calcium carbonate is a helpful supplement in treating osteoporosis. It also can help reduce acidity in coffee. Just add a few eggshells to your cup!"
+        additionalInfo: "Calcium carbonate is a helpful supplement in treating osteoporosis. It can also help reduce acidity in coffee. Just add a few eggshells to your cup!"
     },
     {
-        question: "Chickens what lay brown eggs typically have what color of feathers?",
+        question: "Chickens that lay brown eggs typically have what color of feathers?",
         answerChoices: ["Red", "White", "Black", "Brown"],
         correctAnswer: "Red",
         additionalInfo: "Typically chickens with red feathers and earlobes lay brown eggs. They are usually larger, which is why brown eggs are more expensive."
@@ -34,7 +34,7 @@ var questions = [{
         question: "What color is a fresh egg white?",
         answerChoices: ["Clear", "Light Yellow", "Shiny Pink", "Cloudy White"],
         correctAnswer: "Cloudy White",
-        additionalInfo: "As far as egg white color goes, cloud means it's fresh. Clear indicated it's aging. Pink, iridescent, or any other color means throw it away!"
+        additionalInfo: "As far as egg white color goes, cloudy means it's fresh, while clear indicates it's aging. Pink, iridescent, or any other color means throw it away!"
     },
     {
         question: "An average chicken produces eggs for what period of their life?",
@@ -52,7 +52,7 @@ var questions = [{
         question: "The oldest recipes containing eggs are for what type of dish?",
         answerChoices: ["Breads", "Sauces", "Casseroles", "Eggs On Their Own"],
         correctAnswer: "Breads",
-        additionalInfo: "While use of eggs dates back to prehistoric times, culinary evidence suggests the first documented recipes using eggs were for breads and cakes (as a binding agent)."
+        additionalInfo: "While the use of eggs dates back to prehistoric times, culinary evidence suggests the first documented recipes using eggs were for breads and cakes (as a binding agent)."
     },
     {
         question: "The thickness of an egg's shell primarily depends upon what factor?",
