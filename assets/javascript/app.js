@@ -1,8 +1,6 @@
-//TODO:
+//Items to add later on:
 
 //Add random gudetama gifs to the displayCorrectAnswer function
-
-//Link assignment to portfolio
 
 //Define the variables used in the game
 var currentQuestion = 0;
@@ -11,8 +9,8 @@ var incorrectAnswers = 0;
 var unansweredQuestions = 0;
 
 // Declare and set the timing variables
-var secondsPerQuestion = 10;
-var correctAnswerDisplayTime = 10;
+var secondsPerQuestion = 15;
+var correctAnswerDisplayTime = 15;
 
 // Variable that will hold our setInterval that runs the time
 var intervalId;
@@ -67,43 +65,18 @@ var questions = [{
         additionalInfo: "The thickness of an egg depends on the age of the chicken. While young chickens lay eggs with thicker shells, old chickens lay eggs with thinner shells. This is the case regardless of the chicken breed or egg color."
     },
     {
-        question: "Which factor is NOT part of determingn an egg's grade?",
+        question: "Which factor is NOT part of determining an egg's grade?",
         answerChoices: ["Quality of the Shell", "Breed of the Chicken", "Quality of the Yolk", "Size of the Air Cell"],
         correctAnswer: "Breed of the Chicken",
         additionalInfo: "Egg grade refers to a measurement of the quality of the shell, quality of the white and yolk, and the size of the air cell."
     },
     {
         question: "What unique ingredient do chefs often add to turn egg whites into meringue?",
-        answerChoices: ["Baking", "Corn Syrup", "Cream of Tartar", "Heavy Cream"],
+        answerChoices: ["Baking Soda", "Corn Syrup", "Cream of Tartar", "Heavy Cream"],
         correctAnswer: "Cream of Tartar",
         additionalInfo: "Adding a small amount of cream of tartar (an acidic by-product from wine making) helps stablilize and add volume to egg whites when whipping them."
     },
 ]
-
-//Function to determine what to do next, whether the timer has run out or whether the user has clicked an answer
-function determineNextAction(answerCorrectness) {
-
-    //Display whether the answer was correct on incorrect
-    displayCorrectAnswer(currentQuestion, answerCorrectness);
-
-    // If this is the last question, display the results
-    if (currentQuestion === questions.length - 1) {
-        setTimeout(function () {
-            displayResults()
-        }, correctAnswerDisplayTime * 1000);
-    }
-
-    // If this isn't the last question, move on to the next question
-    else {
-        //Increment to the next question
-        currentQuestion++;
-
-        //Display the next question after 3 seconds
-        setTimeout(function () {
-            displayQuestion(currentQuestion)
-        }, correctAnswerDisplayTime * 1000);
-    }
-}
 
 //Function to display the start button for when the page loads
 function displayStartButton() {
@@ -113,7 +86,8 @@ function displayStartButton() {
 
     //Display an image on the start screen
     var image = $('<img>');
-    image.attr("class", "img-fluid my-5");
+    image.attr("class", "my-5 mx-auto d-block");
+    image.attr("id", "start-image");
     image.attr("src", "assets/images/start-game.jpg");
     $('#question-area').append(image);
 
@@ -131,11 +105,11 @@ function displayQuestion(questionNumber) {
     $('#question-area').empty();
 
     //Start the timer and display the time remaining
-    timer.start();
+    questionTimer.start();
     var timerDisplay = $('<p>');
     timerDisplay.attr("id", "timer-display");
     timerDisplay.attr("class", "text-center");
-    timerDisplay.text("Time Remaining: " + timer.time + " Seconds");
+    timerDisplay.text("Time remaining: " + questionTimer.time + " seconds");
     $('#question-area').append(timerDisplay);
 
     //Display the question
@@ -167,7 +141,7 @@ function displayCorrectAnswer(questionNumber, answerCorrectness) {
     } else if (answerCorrectness === "incorrect") {
         wasItCorrect.text("That answer was a little rotten...");
     } else if (answerCorrectness === "unanswered") {
-        wasItCorrect.text("Time is Up!")
+        wasItCorrect.text("Watch that egg timer!")
     }
     $('#question-area').append(wasItCorrect);
 
@@ -189,6 +163,22 @@ function displayCorrectAnswer(questionNumber, answerCorrectness) {
     additionalInfoParagraph.text(questions[questionNumber].additionalInfo);
     $('#question-area').append(additionalInfoParagraph);
 
+    //Start the timer for when the next question is displayed
+    answerDisplayTimer.start();
+
+    //Display the next question button
+    var nextButton = $('<button>');
+    nextButton.attr("class", "btn btn-dark btn-block next-question-button");
+
+    //Update the timer display. Display "Results in x seconds" if it is the last question. Otherwise display "next question in x seconds"
+    if (currentQuestion === questions.length - 1) {
+        nextButton.text("Results in " + answerDisplayTimer.time + " seconds");
+    } else {
+        nextButton.text("Next question in " + answerDisplayTimer.time + " seconds");
+    }
+
+    //Append the next question button to the page
+    $('#question-area').append(nextButton);
 }
 
 //Function to display the final score after the user has answered all of the questions
@@ -218,7 +208,6 @@ function displayResults() {
     $('#question-area').append(resultsParagraph);
     $('#question-area').append(image);
 
-
     //Display the number of questions answered correctly
     var correctAnswersParagraph = $('<p>');
     correctAnswersParagraph.attr("class", "text-center");
@@ -234,7 +223,7 @@ function displayResults() {
     // Display the number of questions not answered
     var unansweredParagraph = $('<p>');
     unansweredParagraph.attr("class", "text-center");
-    unansweredParagraph.text("Questions not answered: " + unansweredQuestions);
+    unansweredParagraph.text("Questions Not Answered: " + unansweredQuestions);
     $('#question-area').append(unansweredParagraph);
 
     //Display the game reset button
@@ -256,13 +245,29 @@ function resetGame() {
     displayQuestion(currentQuestion);
 }
 
-// Timer object
-var timer = {
-    time: secondsPerQuestion,
+//Function to determine what to do next, whether to move on to the next question or move on to the results. This function is called if the questionTimer has run out or if the user has clicked an answer
+function nextQuestionOrResults() {
 
+    // If this is the last question, display the results
+    if (currentQuestion === questions.length - 1) {
+        displayResults();
+    }
+
+    // If this isn't the last question, move on to the next question
+    else {
+        //Increment to the next question
+        currentQuestion++;
+        //Display the next question
+        displayQuestion(currentQuestion);
+    }
+}
+
+//Timer object for the countdown during questions
+var questionTimer = {
+    time: secondsPerQuestion,
     start: function () {
         //Use setInterval to start the countdown
-        intervalId = setInterval(timer.count, 1000);
+        intervalId = setInterval(questionTimer.count, 1000);
     },
     stop: function () {
         //Use clearInterval to stop the count
@@ -270,28 +275,69 @@ var timer = {
     },
     count: function () {
         //Decrement time by 1
-        timer.time--;
+        questionTimer.time--;
         //Display the time remaining
-        if (timer.time === 1) {
-            $("#timer-display").text("Time Remaining: " + timer.time + " Second");
+        if (questionTimer.time === 1) {
+            $("#timer-display").text("Time remaining: " + questionTimer.time + " second");
         } else {
-            $("#timer-display").text("Time Remaining: " + timer.time + " Seconds");
+            $("#timer-display").text("Time remaining: " + questionTimer.time + " seconds");
         }
-
         //If the time runs out
-        if (timer.time === 0) {
-
+        if (questionTimer.time === 0) {
             //Stop the timer
-            timer.stop();
-            timer.reset();
-
+            questionTimer.stop();
+            questionTimer.reset();
             //Count the question as unanswered
             unansweredQuestions++;
-            determineNextAction("unanswered");
+            //Display whether the answer was correct or incorrect
+            displayCorrectAnswer(currentQuestion, "unanswered");
         }
     },
     reset: function () {
-        timer.time = secondsPerQuestion;
+        questionTimer.time = secondsPerQuestion;
+    },
+};
+//Timer object for the countdown during correct answer reveals
+var answerDisplayTimer = {
+    time: correctAnswerDisplayTime,
+    start: function () {
+        //Use setInterval to start the countdown
+        answerDisplayInterval = setInterval(answerDisplayTimer.count, 1000);
+    },
+    stop: function () {
+        //Use clearInterval to stop the count
+        clearInterval(answerDisplayInterval);
+    },
+    count: function () {
+        //Decrement time by 1
+        answerDisplayTimer.time--;
+        //Display the time remaining
+
+        //Update the timer display. Display "Results in x seconds" if it is the last question. Otherwise display "next question in x seconds"
+        if (currentQuestion === questions.length - 1) {
+            if (answerDisplayTimer.time === 1) {
+                $(".next-question-button").text("Results in " + answerDisplayTimer.time + " second");
+            } else {
+                $(".next-question-button").text("Results in " + answerDisplayTimer.time + " seconds");
+            }
+        } else {
+            if (answerDisplayTimer.time === 1) {
+                $(".next-question-button").text("Next question in " + answerDisplayTimer.time + " second");
+            } else {
+                $(".next-question-button").text("Next question in " + answerDisplayTimer.time + " seconds");
+            }
+        }
+        //When the time runs out
+        if (answerDisplayTimer.time === 0) {
+            //Stop the timer
+            answerDisplayTimer.stop();
+            answerDisplayTimer.reset();
+            //Move on to the next question or display the results
+            nextQuestionOrResults();
+        }
+    },
+    reset: function () {
+        answerDisplayTimer.time = correctAnswerDisplayTime;
     },
 };
 
@@ -312,8 +358,8 @@ $(document).ready(function () {
     //When the user clicks on an answer, take action
     $(document).on('click', '.answer-choice-button', function () {
 
-        timer.stop();
-        timer.reset();
+        questionTimer.stop();
+        questionTimer.reset();
 
         // Determine which answer the user chose
         clickedButtonText = $(this)[0].innerText;
@@ -327,8 +373,15 @@ $(document).ready(function () {
             answerCorrectness = "incorrect";
             incorrectAnswers++;
         }
+        //Display whether the answer was correct or incorrect
+        displayCorrectAnswer(currentQuestion, answerCorrectness);
+    });
 
-        determineNextAction(answerCorrectness);
+    //When the user clicks the next question button, move on to the next question
+    $(document).on('click', '.next-question-button', function () {
+        answerDisplayTimer.stop();
+        answerDisplayTimer.reset();
+        nextQuestionOrResults();
     });
 
     //When the user clicks the reset button, restart the game
