@@ -1,7 +1,3 @@
-//Items to add later on:
-
-//Add random gudetama gifs to the displayCorrectAnswer function
-
 //Define the variables used in the game
 var currentQuestion = 0;
 var correctAnswers = 0;
@@ -179,6 +175,20 @@ function displayCorrectAnswer(questionNumber, answerCorrectness) {
 
     //Append the next question button to the page
     $('#question-area').append(nextButton);
+
+    //Add a random gutetama gif
+    var queryURL = "https://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC&tag=gudetama";
+    $.ajax({
+      url: queryURL,
+      method: "GET"
+    }).then(function(response) {
+        var imageUrl = response.data.image_original_url;
+        var image = $("<img>");
+        image.attr("src", imageUrl);
+        image.attr("class", "img-fluid d-block mx-auto mt-4");
+        image.attr("alt", "gudetama gif");
+        $("#question-area").append(image);
+      });
 }
 
 //Function to display the final score after the user has answered all of the questions
@@ -297,6 +307,7 @@ var questionTimer = {
         questionTimer.time = secondsPerQuestion;
     },
 };
+
 //Timer object for the countdown during correct answer reveals
 var answerDisplayTimer = {
     time: correctAnswerDisplayTime,
