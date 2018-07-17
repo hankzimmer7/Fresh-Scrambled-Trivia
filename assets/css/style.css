@@ -1,6 +1,12 @@
 #start-image {
     max-width: 70%;
 }
+body {
+    background-color: #f0ead6;
+}
+.jumbotron {
+    background-color:white;
+}
 
 /* Large devices (desktops, less than 1200px) */
 @media screen and (max-width: 1199.98px) {
