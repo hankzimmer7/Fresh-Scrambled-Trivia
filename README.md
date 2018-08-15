@@ -12,4 +12,4 @@ Once all of the questions have been answered, the game shows a results page with
 
 ## Technologies Used
 
-* Javascript timers
+* JavaScript timers
