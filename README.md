@@ -1,6 +1,6 @@
 # Fresh Scrambled Trivia
 
-Deployed at https://hankzimmer7.github.io/Fresh-Scrambled-Trivia/
+Deployed at https://hankzimmer7.github.io/fresh-scrambled-trivia/
 
 ## Description
 
